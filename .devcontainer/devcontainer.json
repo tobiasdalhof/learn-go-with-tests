@@ -1,0 +1,26 @@
+{
+	"name": "Go",
+	"build": {
+		"dockerfile": "Dockerfile",
+	},
+	"settings": {
+		"terminal.integrated.shell.linux": "/bin/sh",
+		"go.gopath": "/go",
+		"go.lintFlags": [
+			"--fast"
+		],
+		"go.useLanguageServer": true,
+		"gopls": {
+			"usePlaceholders": true
+		},
+		"files.eol": "\n"
+	},
+	"extensions": [
+		"golang.Go",
+		"2gua.rainbow-brackets",
+		"oderwat.indent-rainbow",
+		"adpyke.vscode-sql-formatter"
+	],
+	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+	// "remoteUser": "vscode"
+}
