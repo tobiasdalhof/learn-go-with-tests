@@ -1,0 +1,21 @@
+name: ci-test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: docker build -t learn-go-with-tests .
+
+      - name: Test
+        run: docker run learn-go-with-tests make test
