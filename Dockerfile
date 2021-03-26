@@ -8,7 +8,8 @@ RUN go get github.com/uudashr/gopkgs/v2/cmd/gopkgs@latest\
     github.com/ramya-rao-a/go-outline \
     github.com/go-delve/delve/cmd/dlv \
     golang.org/x/lint/golint \
-    github.com/josharian/impl
+    github.com/josharian/impl \
+    honnef.co/go/tools/cmd/staticcheck
 RUN GO111MODULE=on go get golang.org/x/tools/gopls@master golang.org/x/tools@master
 ENV CGO_ENABLED=0
 
