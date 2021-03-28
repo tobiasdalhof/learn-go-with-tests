@@ -1,4 +1,4 @@
-FROM golang:1.16-alpine as dev
+FROM golang:1.16-alpine
 
 RUN apk update && \
     apk upgrade && \
@@ -14,15 +14,6 @@ RUN go get github.com/uudashr/gopkgs/v2/cmd/gopkgs@latest\
 
 RUN GO111MODULE=on go get golang.org/x/tools/gopls@master golang.org/x/tools@master
 ENV CGO_ENABLED=0
-
-COPY . /workspaces/learn-go-with-tests
-WORKDIR /workspaces/learn-go-with-tests
-
-FROM golang:1.16-alpine as ci
-
-RUN apk update && \
-    apk upgrade && \
-    apk add --no-cache make
 
 COPY . /workspaces/learn-go-with-tests
 WORKDIR /workspaces/learn-go-with-tests

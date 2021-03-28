@@ -1,0 +1,8 @@
+FROM golang:1.16-alpine
+
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache make
+
+COPY . /workspaces/learn-go-with-tests
+WORKDIR /workspaces/learn-go-with-tests
