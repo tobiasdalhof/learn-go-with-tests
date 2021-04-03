@@ -4,5 +4,7 @@ RUN apk update && \
     apk upgrade && \
     apk add --no-cache make
 
+ENV CGO_ENABLED=0
+
 COPY . /workspaces/learn-go-with-tests
 WORKDIR /workspaces/learn-go-with-tests
