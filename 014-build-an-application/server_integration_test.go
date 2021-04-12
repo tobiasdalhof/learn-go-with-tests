@@ -25,9 +25,21 @@ func TestRecordingWinsAndRetrievingThem(t *testing.T) {
 	}
 	wg.Wait()
 
-	response := httptest.NewRecorder()
-	server.ServeHTTP(response, newGetScoreRequest(player))
-	assertStatus(t, response.Code, http.StatusOK)
+	t.Run("get score", func(t *testing.T) {
+		response := httptest.NewRecorder()
+		server.ServeHTTP(response, newGetScoreRequest(player))
 
-	assertResponseBody(t, response.Body.String(), strconv.Itoa(wantedCount))
+		assertStatus(t, response.Code, http.StatusOK)
+		assertResponseBody(t, response.Body.String(), strconv.Itoa(wantedCount))
+	})
+
+	t.Run("get league", func(t *testing.T) {
+		response := httptest.NewRecorder()
+		server.ServeHTTP(response, newGetLeagueRequest())
+
+		wantedLeague := []Player{{Name: player, Wins: wantedCount}}
+		got := getLeagueFromResponse(t, response.Body)
+
+		assertLeague(t, got, wantedLeague)
+	})
 }
