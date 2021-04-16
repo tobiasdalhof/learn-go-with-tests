@@ -9,7 +9,12 @@ import (
 )
 
 func TestRecordingWinsAndRetrievingThem(t *testing.T) {
-	store := NewInMemoryPlayerStore()
+	file, removeFile := createTempFile(t, "[]")
+	defer removeFile()
+
+	store, err := NewFileSystemPlayerStore(file)
+	assertNoError(t, err)
+
 	server := NewPlayerServer(store)
 
 	player := "Jerome"
@@ -25,6 +30,15 @@ func TestRecordingWinsAndRetrievingThem(t *testing.T) {
 	}
 	wg.Wait()
 
+	t.Run("works with an empty file", func(t *testing.T) {
+		file, removeFile := createTempFile(t, "")
+		defer removeFile()
+
+		_, err := NewFileSystemPlayerStore(file)
+
+		assertNoError(t, err)
+	})
+
 	t.Run("get score", func(t *testing.T) {
 		response := httptest.NewRecorder()
 		server.ServeHTTP(response, newGetScoreRequest(player))
@@ -37,7 +51,7 @@ func TestRecordingWinsAndRetrievingThem(t *testing.T) {
 		response := httptest.NewRecorder()
 		server.ServeHTTP(response, newGetLeagueRequest())
 
-		wantedLeague := []Player{{Name: player, Wins: wantedCount}}
+		wantedLeague := League{{Name: player, Wins: wantedCount}}
 		got := getLeagueFromResponse(t, response.Body)
 
 		assertLeague(t, got, wantedLeague)
