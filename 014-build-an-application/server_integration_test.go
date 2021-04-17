@@ -1,4 +1,4 @@
-package main
+package poker
 
 import (
 	"net/http"
@@ -9,11 +9,11 @@ import (
 )
 
 func TestRecordingWinsAndRetrievingThem(t *testing.T) {
-	file, removeFile := createTempFile(t, "[]")
+	file, removeFile := CreateTempFile(t, "[]")
 	defer removeFile()
 
 	store, err := NewFileSystemPlayerStore(file)
-	assertNoError(t, err)
+	AssertNoError(t, err)
 
 	server := NewPlayerServer(store)
 
@@ -24,36 +24,36 @@ func TestRecordingWinsAndRetrievingThem(t *testing.T) {
 	wg.Add(wantedCount)
 	for i := 0; i < wantedCount; i++ {
 		go func(w *sync.WaitGroup) {
-			server.ServeHTTP(httptest.NewRecorder(), newPostWinRequest(player))
+			server.ServeHTTP(httptest.NewRecorder(), NewPostWinRequest(player))
 			w.Done()
 		}(&wg)
 	}
 	wg.Wait()
 
 	t.Run("works with an empty file", func(t *testing.T) {
-		file, removeFile := createTempFile(t, "")
+		file, removeFile := CreateTempFile(t, "")
 		defer removeFile()
 
 		_, err := NewFileSystemPlayerStore(file)
 
-		assertNoError(t, err)
+		AssertNoError(t, err)
 	})
 
 	t.Run("get score", func(t *testing.T) {
 		response := httptest.NewRecorder()
-		server.ServeHTTP(response, newGetScoreRequest(player))
+		server.ServeHTTP(response, NewGetScoreRequest(player))
 
-		assertStatus(t, response.Code, http.StatusOK)
-		assertResponseBody(t, response.Body.String(), strconv.Itoa(wantedCount))
+		AssertStatus(t, response.Code, http.StatusOK)
+		AssertResponseBody(t, response.Body.String(), strconv.Itoa(wantedCount))
 	})
 
 	t.Run("get league", func(t *testing.T) {
 		response := httptest.NewRecorder()
-		server.ServeHTTP(response, newGetLeagueRequest())
+		server.ServeHTTP(response, NewGetLeagueRequest())
 
 		wantedLeague := League{{Name: player, Wins: wantedCount}}
-		got := getLeagueFromResponse(t, response.Body)
+		got := GetLeagueFromResponse(t, response.Body)
 
-		assertLeague(t, got, wantedLeague)
+		AssertLeague(t, got, wantedLeague)
 	})
 }
